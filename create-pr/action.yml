@@ -1,0 +1,33 @@
+name: set-env
+author: SangBeom-Hahn
+description: 'test'
+inputs:
+  PERSONAL_ACCESS_TOKEN:
+    description: 'test'
+    required: true
+    default: ''
+  HEAD:
+    description: 'test'
+    required: true
+    default: 'release/v0.0.0'
+  BASE:
+    description: 'test'
+    required: true
+    default: 'master'  
+
+runs:
+  using: "composite"
+  steps:
+  - name: gh auth login
+    shell: bash
+    run: |
+      echo ${{ inputs.PERSONAL_ACCESS_TOKEN }} | gh auth login --with-token 
+  - name: create branch
+    shell: bash
+    run: |
+      git checkout -b ${{ inputs.HEAD }}
+      git push origin ${{ inputs.HEAD }}
+  - name: create pr
+    shell: bash  
+    run: |
+      gh pr create --base ${{ inputs.BASE }} --head ${{ inputs.HEAD }} --title "${{ inputs.HEAD }} -> master" --body "release pr"

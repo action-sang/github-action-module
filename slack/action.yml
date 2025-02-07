@@ -1,0 +1,32 @@
+name: set-env
+author: SangBeom-Hahn
+description: 'test'
+inputs:
+  DEPLOY_STEP_STATUS:
+    description: 'test'
+    required: true
+    default: 'success'
+  ENVIRONMENT:
+    description: 'test'
+    required: true
+    default: 'dev'
+  SLACK_WEBHOOK_URL:
+    description: 'test'
+    required: true
+    default: ''  
+
+runs:
+  using: "composite"
+  steps:
+  - name: notify
+    uses: slackapi/slack-github-action@v1.24.0
+    with:
+      webhook: ${{ inputs.SLACK_WEBHOOK_URL }}
+      webhook-type: webhook-trigger
+      payload: |
+        text: "message"
+        blocks: 
+          - type: "section"
+            text: 
+              - type: "mrkdwn"
+                text: "Environment : ${{ inputs.environment }}, Deploy Result : ${{ inputs.DEPLOY_STEP_STATUS }}, Repository : ${{ github.repository }}."
